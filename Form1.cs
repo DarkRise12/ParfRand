@@ -22,16 +22,33 @@ namespace ParfRand
 
         private void button1_MouseClick(object sender, MouseEventArgs e)
         {
+            string VideoName;
+
             if(radioButton1.Checked == true)
             {
                 var rand = new Random();
                 int rnd = rand.Next(1946, 2005);
-                string video_name = "Намедни " + rnd;
+                VideoName = "Намедни " + rnd;
                 try
                 {
-                    Run(video_name).Wait();
+                    Run(VideoName).Wait();
                 }
                 catch(AggregateException ex)
+                {
+                    foreach (var v in ex.InnerExceptions)
+                    {
+                        MessageBox.Show("Error: " + v.Message);
+                    }
+                }
+            }
+            if(radioButton2.Checked == true)
+            {
+                VideoName = "Намедни " + numericUpDown1.Value;
+                try
+                {
+                    Run(VideoName).Wait();
+                }
+                catch (AggregateException ex)
                 {
                     foreach (var v in ex.InnerExceptions)
                     {
