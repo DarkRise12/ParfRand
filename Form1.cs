@@ -14,6 +14,7 @@ namespace ParfRand
 {
     public partial class Form1 : Form
     {
+        private string VideoName;
         public Form1()
         {
             //TODO: block another elementss then radio button is pressed
@@ -22,8 +23,6 @@ namespace ParfRand
 
         private void button1_MouseClick(object sender, MouseEventArgs e)
         {
-            string VideoName;
-
             if(radioButton1.Checked == true)
             {
                 var rand = new Random();
@@ -31,7 +30,7 @@ namespace ParfRand
                 VideoName = "Намедни " + rnd;
                 try
                 {
-                    Run(VideoName).Wait();
+                    Run().Wait();
                 }
                 catch(AggregateException ex)
                 {
@@ -46,7 +45,22 @@ namespace ParfRand
                 VideoName = "Намедни " + numericUpDown1.Value;
                 try
                 {
-                    Run(VideoName).Wait();
+                    Run().Wait();
+                }
+                catch (AggregateException ex)
+                {
+                    foreach (var v in ex.InnerExceptions)
+                    {
+                        MessageBox.Show("Error: " + v.Message);
+                    }
+                }
+            }
+            if(radioButton3.Checked == true)
+            {
+                VideoName = textBox1.Text;
+                try
+                {
+                    Run().Wait();
                 }
                 catch (AggregateException ex)
                 {
@@ -59,7 +73,7 @@ namespace ParfRand
             
         }
 
-        private async Task Run(string srch)
+        private async Task Run()
         {     
             var youtubeService = new YouTubeService(new BaseClientService.Initializer()
             {
@@ -67,7 +81,7 @@ namespace ParfRand
                 ApplicationName = this.GetType().ToString()
             });
             var searchListReq = youtubeService.Search.List("snippet");
-            searchListReq.Q = srch;
+            searchListReq.Q = VideoName;
             var searchListResponse = searchListReq.Execute();
             var searchRes = searchListResponse.Items[0];
             string vidId = searchRes.Id.VideoId;
